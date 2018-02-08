@@ -10,7 +10,7 @@ Through the use of RWS, e-commerce websites can push orders to Red Arrow and pul
 
 From the terminal execute the following:
 
-`composer config repositories.project_name-rialtowebservice vcs git@github.com:Space48/RialtoWebService.git`
+`composer config repositories.project_name-rialtowebservice git git@github.com:Space48/RialtoWebService.git`
 
 then..
 
