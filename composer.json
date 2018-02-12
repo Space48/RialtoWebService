@@ -9,7 +9,7 @@
     "version": "1.0",
     "autoload": {
         "psr-4": {
-            "Space48\\RialtoWebService\\": "./src/"
+            "RialtoWebService\\": "./src/"
         }
     }
 }
