@@ -2,14 +2,20 @@
     "name": "space48/rialtowebservice",
     "description": "Rialto Web Service Soap Package",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=7.0",
         "ext-soap": "*",
         "wsdltophp/packagebase": "~1.0"
     },
-    "version": "1.0",
+    "scripts": {
+        "test": "vendor/bin/phpunit -c phpunit.xml"
+    },
     "autoload": {
         "psr-4": {
-            "RialtoWebService\\": "./src/"
+            "RialtoWebService\\": "./src/",
+            "RialtoWebService\\Test\\": "./test/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
     }
 }
