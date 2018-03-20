@@ -11,9 +11,6 @@ use WsdlToPhp\PackageBase\AbstractSoapClientBase;
 
 class AddClient
 {
-    const LIVE_WSDL_URL = 'https://rws.redarrow.co.uk/service.asmx?wsdl';
-    const TEST_WSDL_URL = 'http://test.rws.redarrow.co.uk/service.asmx?wsdl';
-
     /** @var ClientConfiguration */
     private $configuration;
 
