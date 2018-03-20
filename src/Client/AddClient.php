@@ -14,28 +14,25 @@ class AddClient
     const LIVE_WSDL_URL = 'https://rws.redarrow.co.uk/service.asmx?wsdl';
     const TEST_WSDL_URL = 'http://test.rws.redarrow.co.uk/service.asmx?wsdl';
 
-    /** @var string */
-    private $username;
+    /** @var ClientConfiguration */
+    private $configuration;
 
-    /** @var string */
-    private $password;
-
-    /** @var string */
-    private $wsdlUrl;
-
-    public function __construct(string $username, string $password, bool $testMode = false)
+    public function __construct(ClientConfiguration $configuration)
     {
-        $this->username = $username;
-        $this->password = $password;
-        $this->wsdlUrl = $testMode ? self::TEST_WSDL_URL : self::LIVE_WSDL_URL;
+        $this->configuration = $configuration;
     }
 
     public function sendOrders(RialtoWebOrderList $orderList): AddOrdersResult
     {
-        $orders = new AddRialtoOrders($orderList, $this->username, $this->password);
+        $orders = new AddRialtoOrders(
+            $orderList,
+            $this->configuration->getUsername(),
+            $this->configuration->getPassword()
+        );
+
         $service = new Add([
             AbstractSoapClientBase::WSDL_CLASSMAP => ClassMap::get(),
-            AbstractSoapClientBase::WSDL_URL => $this->wsdlUrl
+            AbstractSoapClientBase::WSDL_URL => $this->configuration->getWsdlUrl()
         ]);
 
         $result = $service->AddRialtoOrders($orders);
