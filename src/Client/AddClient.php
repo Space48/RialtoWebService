@@ -19,7 +19,7 @@ class AddClient
         $this->configuration = $configuration;
     }
 
-    public function sendOrders(RialtoWebOrderList $orderList): AddOrdersResult
+    public function addOrders(RialtoWebOrderList $orderList): AddOrdersResult
     {
         $orders = new AddRialtoOrders(
             $orderList,
