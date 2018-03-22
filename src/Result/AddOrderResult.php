@@ -36,6 +36,18 @@ class AddOrderResult
         return $clone;
     }
 
+    public function getErrorSummary()
+    {
+        $messages = \array_map(
+            function (Error $error) {
+                return $error->__toString();
+            },
+            $this->errors
+        );
+
+        return \implode(' :: ', $messages);
+    }
+
     public function isSuccess(): bool
     {
         return empty($this->errors);
