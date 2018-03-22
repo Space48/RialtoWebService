@@ -19,6 +19,12 @@ class AddClient
         $this->configuration = $configuration;
     }
 
+    /**
+     * @param RialtoWebOrderList $orderList
+     * @return AddOrdersResult
+     * @throws ClientException
+     * @throws \SoapFault
+     */
     public function addOrders(RialtoWebOrderList $orderList): AddOrdersResult
     {
         $orders = new AddRialtoOrders(
@@ -33,6 +39,12 @@ class AddClient
         ]);
 
         $result = $service->AddRialtoOrders($orders);
+
+        if (!$result instanceof AddRialtoOrdersResponse) {
+            $message = \implode("\n", $service->getLastError());
+            throw new ClientException($message);
+        }
+
         return AddOrdersResult::of($result->getRialtowebordersresponse()->getErrors()->getError());
     }
 }
