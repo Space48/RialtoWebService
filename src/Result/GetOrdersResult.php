@@ -21,18 +21,6 @@ class GetOrdersResult implements \IteratorAggregate
         $this->returnStatus = $returnStatus;
     }
 
-//    public static function of($orderResults): self
-//    {
-//        $instance = new self();
-//
-//        \assert($orderResults instanceof RialtoOrderDetailsResponse);
-//        $instance->ordersResponse['Orders'] = $instance->getOrderResults($orderResults->getOrders());
-//        $instance->ordersResponse['Errors'] = $instance->getErrorResults($orderResults->getErrors());
-//        $instance->ordersResponse['ReturnStatus'] = $orderResults->ReturnStatus;
-//
-//        return $instance;
-//    }
-
     /**
      * @param RialtoOrderDetailsResponse $orderResults
      * @return GetOrdersResult
@@ -41,9 +29,17 @@ class GetOrdersResult implements \IteratorAggregate
     {
         $instance = new self($orderResults->getReturnStatus());
 
+        if ($orderResults->getOrders() === null) {
+            return $instance;
+        }
+
         /** @var RialtoOrderDetailsResponseOrder $orderResult */
-        foreach ($orderResults->getOrders() as $orderResult) {
+        foreach ($orderResults->getOrders()->order as $orderResult) {
             $instance->orders[$orderResult->getOrderNo()] = new GetOrderResult($orderResult);
+        }
+
+        if ($orderResults->getErrors() === null) {
+            return $instance;
         }
 
         /** @var RialtoOrdersResponseError $orderError */
@@ -71,52 +67,33 @@ class GetOrdersResult implements \IteratorAggregate
         return $this->orders[$orderId] ?? null;
     }
 
-//    /**
-//     * @param RialtoOrderDetailsResponseOrderList $orderDetailsList
-//     * @return array
-//     */
-//    public function getOrderResults(RialtoOrderDetailsResponseOrderList $orderDetailsList)
-//    {
-//        if (!isset($orderDetailsList->order)) {
-//            return;
-//        }
-//
-//        foreach ($orderDetailsList->order as $orderDetail) {
-//            $order['orderNo'] = $orderDetail->OrderNo;
-//            $order['fpOrderNo'] = $orderDetail->FPOrderNo;
-//            $order['statusCode'] = $orderDetail->StatusCode;
-//            $order['despatchDate'] = $orderDetail->DespatchDate;
-//            $order['consignmentNo'] = $orderDetail->ConsignmentNo;
-//            $order['carrierRef'] = $orderDetail->CarrierRef;
-//            $order['carrierName'] = $orderDetail->CarrierName;
-//            $order['updated'] = $orderDetail->Updated;
-//            $orders[] = $order;
-//        }
-//
-//        return isset($orders) ? $orders : null;
-//    }
+    public function equals($other): bool
+    {
+        if (!$other instanceof $this) {
+            return false;
+        }
 
-//    /**
-//     * @param RialtoOrdersResponseErrorList $orderErrorsList
-//     * @return array
-//     */
-//    public function getErrorResults(RialtoOrdersResponseErrorList $orderErrorsList)
-//    {
-//        if (!isset($orderErrorsList->error)) {
-//            return;
-//        }
-//
-//        foreach ($orderErrorsList->error as $orderError) {
-//            $error['errorCode'] = $orderError->ErrorCode;
-//            $error['errorMessage'] = $orderError->ErrorMessage;
-//            $errors[] = $error;
-//        }
-//
-//        return isset($errors) ? $errors : null;
-//    }
+        $returnStatusMatches = $this->getReturnStatus() === $other->getReturnStatus();
+        $thoseContainThese = $this->matchOrders($this, $other);
+        $theseContainThose = $this->matchOrders($other, $this);
+
+        return $returnStatusMatches && $thoseContainThese && $theseContainThose;
+    }
+
+    private function matchOrders(GetOrdersResult $a, GetOrdersResult $b): bool
+    {
+        foreach ($a->orders as $orderId => $item) {
+            $addOrderResult = $b->getOrderResultById($orderId);
+            if (!$addOrderResult || $addOrderResult->equals($item)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public function getIterator()
     {
-        return new \ArrayIterator($this->ordersResponse);
+        return new \ArrayIterator($this->orders);
     }
 }
