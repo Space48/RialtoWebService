@@ -11,10 +11,10 @@ use RialtoWebService\StructType\RialtoOrdersResponseErrorList;
 class GetOrdersResult implements \IteratorAggregate
 {
     /** @var array $orders */
-    private $orders = [];
+    public $orders = [];
 
     /** @var string */
-    private $returnStatus;
+    public $returnStatus;
 
     private function __construct(string $returnStatus)
     {
@@ -38,18 +38,10 @@ class GetOrdersResult implements \IteratorAggregate
             $instance->orders[$orderResult->getOrderNo()] = new GetOrderResult($orderResult);
         }
 
-        if ($orderResults->getErrors() === null) {
-            return $instance;
-        }
-
-        /** @var RialtoOrdersResponseError $orderError */
-        foreach ($orderResults->getErrors() as $orderError) {
-            $order = $instance->orders[$orderError->getOrderNo()];
-            \assert($order instanceof GetOrderResult);
-            $instance->orders[$orderError->getOrderNo()] = $order->withErrors($orderError);
-        }
-
+        // set results object return status and errors
         $instance->returnStatus = $orderResults->getReturnStatus();
+        $instance = $instance->setErrors($instance, $orderResults);
+
         return $instance;
     }
 
@@ -90,6 +82,27 @@ class GetOrdersResult implements \IteratorAggregate
         }
 
         return true;
+    }
+
+    /**
+     * @param $instance
+     * @param $orderResults
+     * @return mixed
+     */
+    private function setErrors($instance, $orderResults)
+    {
+        if ($orderResults->getErrors() === null || $orderResults->getErrors()->error === null) {
+            return $instance;
+        }
+
+        /** @var RialtoOrdersResponseError $orderError */
+        foreach ($orderResults->getErrors() as $orderError) {
+            $order = $instance->orders[$orderError->getOrderNo()];
+            \assert($order instanceof GetOrderResult);
+            $instance->orders[$orderError->getOrderNo()] = $order->withErrors($orderError);
+        }
+
+        return $instance;
     }
 
     public function getIterator()

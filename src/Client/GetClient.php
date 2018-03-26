@@ -34,7 +34,6 @@ class GetClient
             throw new \RuntimeException('Could not get orders from RWS, please re-check order Id\'s');
         }
 
-//        return GetOrdersResult::of($rialtoOrderDetailsResult->getRialtoorderdetailsresponse());
         return GetOrdersResult::fromResponse($rialtoOrderDetailsResult->getRialtoorderdetailsresponse());
     }
 

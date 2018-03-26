@@ -7,10 +7,10 @@ use RialtoWebService\StructType\RialtoOrderDetailsResponseOrder;
 class GetOrderResult
 {
     /** @var RialtoOrderDetailsResponseOrder */
-    private $order;
+    public $order;
 
     /** @var array */
-    private $errors = [];
+    public $errors = [];
 
     public function __construct(RialtoOrderDetailsResponseOrder $order)
     {
