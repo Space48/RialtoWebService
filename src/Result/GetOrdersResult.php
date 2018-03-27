@@ -16,11 +16,6 @@ class GetOrdersResult implements \IteratorAggregate
     /** @var string */
     public $returnStatus;
 
-    private function __construct(string $returnStatus)
-    {
-        $this->returnStatus = $returnStatus;
-    }
-
     /**
      * @param RialtoOrderDetailsResponse $orderResults
      * @return GetOrdersResult
@@ -96,10 +91,10 @@ class GetOrdersResult implements \IteratorAggregate
         }
 
         /** @var RialtoOrdersResponseError $orderError */
-        foreach ($orderResults->getErrors() as $orderError) {
+        foreach ($orderResults->getErrors()->error as $orderError) {
             $order = $instance->orders[$orderError->getOrderNo()];
             \assert($order instanceof GetOrderResult);
-            $instance->orders[$orderError->getOrderNo()] = $order->withErrors($orderError);
+            $instance->orders[$orderError->getOrderNo()] = $order->withErrors([$orderError]);
         }
 
         return $instance;
