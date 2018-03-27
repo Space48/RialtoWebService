@@ -16,6 +16,11 @@ class GetOrdersResult implements \IteratorAggregate
     /** @var string */
     public $returnStatus;
 
+    private function __construct(string $returnStatus)
+    {
+        $this->returnStatus = $returnStatus;
+    }
+
     /**
      * @param RialtoOrderDetailsResponse $orderResults
      * @return GetOrdersResult
