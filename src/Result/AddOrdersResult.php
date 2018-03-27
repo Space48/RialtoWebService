@@ -17,13 +17,19 @@ class AddOrdersResult implements \IteratorAggregate
         $instance = new self();
         foreach ($orderResults as $error) {
             \assert($error instanceof RialtoOrdersResponseError);
+            \assert($error->getOrderNo() !== null);
+
             if (!isset($instance->orders[$error->getOrderNo()])) {
                 $instance->orders[$error->getOrderNo()] = new AddOrderResult($error->getOrderNo(), []);
             }
+
             $orderResult = $instance->orders[$error->getOrderNo()];
-            $instance->orders[$error->getOrderNo()] = $orderResult->withError(
-                new Error($error->getErrorCode(), $error->getErrorMessage())
-            );
+
+            if ($error->getErrorCode() !== null) {
+                $instance->orders[$error->getOrderNo()] = $orderResult->withError(
+                    new Error($error->getErrorCode(), $error->getErrorMessage())
+                );
+            }
         }
 
         return $instance;
