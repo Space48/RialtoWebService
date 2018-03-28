@@ -38,6 +38,7 @@ class AddClient
             AbstractSoapClientBase::WSDL_URL => $this->configuration->getWsdlUrl()
         ]);
 
+
         $result = $service->AddRialtoOrders($orders);
 
         if (!$result instanceof \RialtoWebService\StructType\AddRialtoOrdersResponse) {

@@ -34,7 +34,8 @@ class GetOrdersResult implements \IteratorAggregate
         }
 
         /** @var RialtoOrderDetailsResponseOrder $orderResult */
-        foreach ($orderResults->getOrders()->getOrder() as $orderResult) {
+        $rialtoOrderDetailsResponseOrders = $orderResults->getOrders()->getOrder() ?? [];
+        foreach ($rialtoOrderDetailsResponseOrders as $orderResult) {
             $instance->orders[$orderResult->getOrderNo()] = (new GetOrderResult($orderResult->getOrderNo()))->withOrder($orderResult);
         }
 

@@ -29,7 +29,7 @@ class AddOrderResult
     public function withError(Error $error): self
     {
         $instance = clone $this;
-        $instance->error = $this->errors->withError($error);
+        $instance->errors = $this->errors->withError($error);
         return $instance;
     }
 
