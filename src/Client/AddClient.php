@@ -41,6 +41,11 @@ class AddClient
 
         $result = $service->AddRialtoOrders($orders);
 
+        // TODO: log these
+        //echo $service->getLastRequest();
+        //echo $service->getLastResponse();
+
+
         if (!$result instanceof \RialtoWebService\StructType\AddRialtoOrdersResponse) {
             $errors = $service->getLastError();
             if (empty($errors)) {
@@ -51,6 +56,6 @@ class AddClient
             throw new ClientException($message);
         }
 
-        return AddOrdersResult::of($result->getRialtowebordersresponse()->getErrors()->getError());
+        return AddOrdersResult::of($result->getRialtowebordersresponse()->getErrors()->getError() ?? []);
     }
 }
