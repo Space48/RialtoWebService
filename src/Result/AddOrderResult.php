@@ -13,6 +13,7 @@ class AddOrderResult
     public function __construct(string $orderIdentifier)
     {
         $this->orderIdentifier = $orderIdentifier;
+        $this->errors = ErrorSet::create();
     }
 
     public function getOrderIdentifier(): string

@@ -6,6 +6,11 @@ class ErrorSet implements \IteratorAggregate, \JsonSerializable
 {
     private $errors = [];
 
+    public static function create()
+    {
+        return new self;
+    }
+
     public function withError(Error $error): self
     {
         $instance = clone $this;

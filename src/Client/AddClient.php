@@ -40,8 +40,13 @@ class AddClient
 
         $result = $service->AddRialtoOrders($orders);
 
-        if (!$result instanceof AddRialtoOrdersResponse) {
-            $message = \implode("\n", $service->getLastError());
+        if (!$result instanceof \RialtoWebService\StructType\AddRialtoOrdersResponse) {
+            $errors = $service->getLastError();
+            if (empty($errors)) {
+                $message = 'RWS AddOrder Service failed without reporting any errors.';
+            } else {
+                $message = \implode("\n", $errors);
+            }
             throw new ClientException($message);
         }
 

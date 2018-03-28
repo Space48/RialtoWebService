@@ -23,6 +23,7 @@ class AddOrdersResult implements \IteratorAggregate
                 $instance->orders[$error->getOrderNo()] = new AddOrderResult($error->getOrderNo(), []);
             }
 
+            /** @var AddOrderResult $orderResult */
             $orderResult = $instance->orders[$error->getOrderNo()];
 
             if ($error->getErrorCode() !== null) {
