@@ -7,13 +7,12 @@ class AddOrderResult
     /** @var string */
     private $orderIdentifier;
 
-    /** @var array */
+    /** @var ErrorSet */
     private $errors;
 
-    public function __construct(string $orderIdentifier, array $errors = [])
+    public function __construct(string $orderIdentifier)
     {
         $this->orderIdentifier = $orderIdentifier;
-        $this->errors = $errors;
     }
 
     public function getOrderIdentifier(): string
@@ -21,48 +20,20 @@ class AddOrderResult
         return $this->orderIdentifier;
     }
 
-    /**
-     * @return Error[]
-     */
-    public function getErrors(): array
+    public function getErrors(): ErrorSet
     {
         return $this->errors;
     }
 
     public function withError(Error $error): self
     {
-        $clone = clone $this;
-        $clone->errors[] = $error;
-        return $clone;
-    }
-
-    public function getErrorSummary()
-    {
-        $messages = \array_map(
-            function (Error $error) {
-                return $error->__toString();
-            },
-            $this->errors
-        );
-
-        return \implode(' :: ', $messages);
+        $instance = clone $this;
+        $instance->error = $this->errors->withError($error);
+        return $instance;
     }
 
     public function isSuccess(): bool
     {
-        return empty($this->errors);
-    }
-
-    public function equals($other)
-    {
-        if (!($other instanceof $this && $other->orderIdentifier === $this->orderIdentifier)) {
-            return false;
-        }
-
-        $errorChecker = function (Error $a, $b) { return $a->equals($b); };
-        $errorsMatchA = empty(array_udiff($this->errors, $other->errors, $errorChecker));
-        $errorsMatchB = empty(array_udiff($other->errors, $this->errors, $errorChecker));
-
-        return $errorsMatchA && $errorsMatchB;
+        return $this->errors->isEmpty();
     }
 }

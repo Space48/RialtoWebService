@@ -11,10 +11,10 @@ use RialtoWebService\StructType\RialtoOrdersResponseErrorList;
 class GetOrdersResult implements \IteratorAggregate
 {
     /** @var array $orders */
-    public $orders = [];
+    private $orders = [];
 
     /** @var string */
-    public $returnStatus;
+    private $returnStatus;
 
     private function __construct(string $returnStatus)
     {
@@ -34,13 +34,20 @@ class GetOrdersResult implements \IteratorAggregate
         }
 
         /** @var RialtoOrderDetailsResponseOrder $orderResult */
-        foreach ($orderResults->getOrders()->order as $orderResult) {
-            $instance->orders[$orderResult->getOrderNo()] = new GetOrderResult($orderResult);
+        foreach ($orderResults->getOrders()->getOrder() as $orderResult) {
+            $instance->orders[$orderResult->getOrderNo()] = (new GetOrderResult($orderResult->getOrderNo()))->withOrder($orderResult);
         }
 
-        // set results object return status and errors
-        $instance->returnStatus = $orderResults->getReturnStatus();
-        $instance = $instance->setErrors($instance, $orderResults);
+        $errors = $orderResults->getErrors()->getError() ?? [];
+        foreach ($errors as $error) {
+            if (!isset($instance->orders[$error->getOrderNo()])) {
+                $instance->orders[$error->getOrderNo()] = new GetOrderResult($error->getOrderNo());
+            }
+
+            /** @var GetOrderResult $order */
+            $order = $instance->orders[$error->getOrderNo()];
+            $instance->orders[$error->getOrderNo()] = $order->withError(new Error($error->getErrorCode(), $error->getErrorMessage()));
+        }
 
         return $instance;
     }
@@ -51,12 +58,12 @@ class GetOrdersResult implements \IteratorAggregate
     }
 
     /**
-     * @param string $orderId
+     * @param string $orderNo
      * @return GetOrderResult|null
      */
-    public function getOrderResultById(string $orderId)
+    public function getOrderResult(string $orderNo)
     {
-        return $this->orders[$orderId] ?? null;
+        return $this->orders[$orderNo] ?? null;
     }
 
     public function equals($other): bool
@@ -82,27 +89,6 @@ class GetOrdersResult implements \IteratorAggregate
         }
 
         return true;
-    }
-
-    /**
-     * @param $instance
-     * @param $orderResults
-     * @return mixed
-     */
-    private function setErrors($instance, $orderResults)
-    {
-        if ($orderResults->getErrors() === null || $orderResults->getErrors()->error === null) {
-            return $instance;
-        }
-
-        /** @var RialtoOrdersResponseError $orderError */
-        foreach ($orderResults->getErrors()->error as $orderError) {
-            $order = $instance->orders[$orderError->getOrderNo()];
-            \assert($order instanceof GetOrderResult);
-            $instance->orders[$orderError->getOrderNo()] = $order->withErrors([$orderError]);
-        }
-
-        return $instance;
     }
 
     public function getIterator()

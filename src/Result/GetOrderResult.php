@@ -6,22 +6,49 @@ use RialtoWebService\StructType\RialtoOrderDetailsResponseOrder;
 
 class GetOrderResult
 {
+    private $orderNo;
+
     /** @var RialtoOrderDetailsResponseOrder */
-    public $order;
+    private $order;
 
     /** @var array */
-    public $errors = [];
+    private $errors = [];
 
-    public function __construct(RialtoOrderDetailsResponseOrder $order)
+    public function __construct(string $orderNo)
     {
-        $this->order = $order;
+        $this->orderNo = $orderNo;
     }
 
-    public function withErrors(array $errors): self
+    public function getOrderNo(): string
+    {
+        return $this->orderNo;
+    }
+
+    public function withOrder(RialtoOrderDetailsResponseOrder $order): self
     {
         $instance = clone $this;
-        $instance->errors = $errors;
+        $instance->order = $order;
         return $instance;
+    }
+
+    /**
+     * @return RialtoOrderDetailsResponseOrder|null
+     */
+    public function getOrderReponse()
+    {
+        return $this->order;
+    }
+
+    public function withError(Error $error): self
+    {
+        $instance = clone $this;
+        $instance->errors[] = $error;
+        return $instance;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 
     public function equals($other)

@@ -2,7 +2,7 @@
 
 namespace RialtoWebService\Result;
 
-class Error
+class Error implements \JsonSerializable
 {
     /** @var string */
     private $code;
@@ -32,8 +32,8 @@ class Error
             && $other->getCode() === $this->getCode();
     }
 
-    public function __toString()
+    public function jsonSerialize()
     {
-        return "code: {$this->getCode()} message: {$this->getMessage()}";
+        return \json_encode(['code' => $this->code, 'message' => $this->message]);
     }
 }
