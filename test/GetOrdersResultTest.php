@@ -15,15 +15,21 @@ class GetOrdersResultTest extends TestCase
      * @param GetOrdersResult $expectedResult
      * @dataProvider casesForFromResponse
      */
-    public function testEquals(RialtoOrderDetailsResponse $response, GetOrdersResult $comparator, bool $isEquals)
-    {
-        $this->assertEquals($isEquals, GetOrdersResult::fromResponse($response)->equals($comparator));
+    public function testEquals(
+        RialtoOrderDetailsResponse $response,
+        GetOrdersResult $comparator,
+        bool $isEquals
+    ) {
+        $this->assertEquals(
+            $isEquals,
+            GetOrdersResult::fromResponse($response)->equals($comparator)
+        );
     }
 
     public function casesForFromResponse(): array
     {
         return [
-            'A response with no orders should and the same return status should be equal' => [
+            'A response with no orders and the same return status should be equal' => [
                 $response = new RialtoOrderDetailsResponse(null, null, 100),
                 $comparator = GetOrdersResult::fromResponse($response),
                 $isEquals = true

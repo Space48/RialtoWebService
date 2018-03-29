@@ -22,11 +22,11 @@ class AddOrderResultTest extends TestCase
     {
         return [
             'An AddOrderResult with no errors is successful' => [
-                new AddOrderResult('1', []),
+                new AddOrderResult('1'),
                 true
             ],
             'An AddOrderResult with errors is not successful' => [
-                new AddOrderResult('1', ['I am an error']),
+                (new AddOrderResult('1'))->withError(new Error('1', 'I am broken')),
                 false
             ],
         ];
@@ -47,17 +47,17 @@ class AddOrderResultTest extends TestCase
     {
         return [
             'Same order id and no errors is equal' => [
-                $a = new AddOrderResult('1', []),
-                $b = new AddOrderResult('1', []),
+                $a = new AddOrderResult('1'),
+                $b = new AddOrderResult('1'),
                 true
             ],
             'Different order id and no errors is not equal' => [
-                $a = new AddOrderResult('1', []),
-                $b = new AddOrderResult('2', []),
+                $a = new AddOrderResult('1'),
+                $b = new AddOrderResult('2'),
                 false
             ],
             'Different type passed in is not equal' => [
-                $a = new AddOrderResult('1', []),
+                $a = new AddOrderResult('1'),
                 $b = $this,
                 false
             ],

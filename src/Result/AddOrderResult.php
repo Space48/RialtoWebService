@@ -37,4 +37,11 @@ class AddOrderResult
     {
         return $this->errors->isEmpty();
     }
+
+    public function equals($other): bool
+    {
+        return $other instanceof $this
+            && $other->getOrderIdentifier() === $this->getOrderIdentifier()
+            && $other->getErrors()->equals($this->errors);
+    }
 }

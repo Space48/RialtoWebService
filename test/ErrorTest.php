@@ -29,8 +29,8 @@ class ErrorTest extends TestCase
                 $expectation = 'Message A'
             ],
             [
-                $subject = (new Error('CODEA', 'Message A'))->__toString(),
-                $expectation = 'code: CODEA message: Message A'
+                $subject = (new Error('CODEA', 'Message A'))->jsonSerialize(),
+                $expectation = \json_encode(['code' => 'CODEA', 'message' => 'Message A'])
             ],
         ];
     }

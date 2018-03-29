@@ -23,6 +23,19 @@ class ErrorSet implements \IteratorAggregate, \JsonSerializable
         return isset($this->errors[$errorCode]);
     }
 
+    public function equals($other): bool
+    {
+        if (!$other instanceof $this) {
+            return false;
+        }
+
+        $theseCodes = array_keys($this->errors);
+        $thoseCodes = array_keys($other->errors);
+
+        return count(\array_intersect($theseCodes, $thoseCodes)) === 0
+            && count(\array_intersect($thoseCodes, $theseCodes)) === 0;
+    }
+
     public function isEmpty(): bool
     {
         return empty($this->errors);
