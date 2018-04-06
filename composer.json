@@ -19,7 +19,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "RialtoWebService\\Test\\": "./test/"
+            "RialtoWebService\\Test\\": "./tests/"
         }
     }
 }
