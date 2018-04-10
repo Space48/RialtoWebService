@@ -8,15 +8,20 @@ use RialtoWebService\ClassMap;
 use RialtoWebService\ServiceType\Get;
 use RialtoWebService\StructType\GetRialtoOrderDetails;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
+use Psr\Log\LoggerInterface;
 
 class GetClient
 {
     /** @var ClientConfiguration */
     private $configuration;
 
-    public function __construct(ClientConfiguration $configuration)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(ClientConfiguration $configuration, LoggerInterface $logger)
     {
         $this->configuration = $configuration;
+        $this->logger = $logger;
     }
 
     public function getOrders(array $orderNumbers)
@@ -29,6 +34,11 @@ class GetClient
         $rialtoOrderDetailsResult = $service->GetRialtoOrderDetails(
             $this->setOrderDetails($orderNumbers)
         );
+
+        // log request and response
+        $xmlRequest = $this->configuration->concealRequestCredentials(Get::getSoapClient()->__getLastRequest());
+        $this->logger->info($xmlRequest);
+        $this->logger->info(Get::getSoapClient()->__getLastResponse());
 
         if ($rialtoOrderDetailsResult === false) {
             throw new \RuntimeException('Could not get orders from RWS, please re-check order Id\'s');
