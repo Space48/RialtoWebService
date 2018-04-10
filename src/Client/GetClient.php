@@ -16,12 +16,12 @@ class GetClient
     private $configuration;
 
     /** @var LoggerInterface */
-    private $loggerInterface;
+    private $logger;
 
-    public function __construct(ClientConfiguration $configuration, LoggerInterface $loggerInterface)
+    public function __construct(ClientConfiguration $configuration, LoggerInterface $logger)
     {
         $this->configuration = $configuration;
-        $this->loggerInterface = $loggerInterface;
+        $this->logger = $logger;
     }
 
     public function getOrders(array $orderNumbers)
@@ -37,8 +37,8 @@ class GetClient
 
         // log request and response
         $xmlRequest = $this->configuration->concealRequestCredentials(Get::getSoapClient()->__getLastRequest());
-        $this->loggerInterface->info($xmlRequest);
-        $this->loggerInterface->info(Get::getSoapClient()->__getLastResponse());
+        $this->logger->info($xmlRequest);
+        $this->logger->info(Get::getSoapClient()->__getLastResponse());
 
         if ($rialtoOrderDetailsResult === false) {
             throw new \RuntimeException('Could not get orders from RWS, please re-check order Id\'s');

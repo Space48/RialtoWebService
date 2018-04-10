@@ -16,12 +16,12 @@ class AddClient
     private $configuration;
 
     /** @var LoggerInterface */
-    private $loggerInterface;
+    private $logger;
 
-    public function __construct(ClientConfiguration $configuration, LoggerInterface $loggerInterface)
+    public function __construct(ClientConfiguration $configuration, LoggerInterface $logger)
     {
         $this->configuration = $configuration;
-        $this->loggerInterface = $loggerInterface;
+        $this->logger = $logger;
     }
 
     /**
@@ -48,8 +48,8 @@ class AddClient
 
         // log request and response
         $xmlRequest = $this->configuration->concealRequestCredentials(Add::getSoapClient()->__getLastRequest());
-        $this->loggerInterface->info($xmlRequest);
-        $this->loggerInterface->info(Add::getSoapClient()->__getLastResponse());
+        $this->logger->info($xmlRequest);
+        $this->logger->info(Add::getSoapClient()->__getLastResponse());
 
 
         if (!$result instanceof \RialtoWebService\StructType\AddRialtoOrdersResponse) {
