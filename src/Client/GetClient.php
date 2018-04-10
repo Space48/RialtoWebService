@@ -36,9 +36,9 @@ class GetClient
         );
 
         // log request and response
-        $xmlRequest = $this->configuration->concealRequestCredentials(Add::getSoapClient()->__getLastRequest());
+        $xmlRequest = $this->configuration->concealRequestCredentials(Get::getSoapClient()->__getLastRequest());
         $this->loggerInterface->info($xmlRequest);
-        $this->loggerInterface->info(Add::getSoapClient()->__getLastResponse());
+        $this->loggerInterface->info(Get::getSoapClient()->__getLastResponse());
 
         if ($rialtoOrderDetailsResult === false) {
             throw new \RuntimeException('Could not get orders from RWS, please re-check order Id\'s');
