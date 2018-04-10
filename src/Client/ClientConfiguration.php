@@ -43,4 +43,10 @@ class ClientConfiguration
         $instance->wsdlUrl = $wsdlUrl;
         return $instance;
     }
+
+    public function concealRequestCredentials(string $soapRequest)
+    {
+        $xmlRequest = str_replace($this->getUsername(), 'xxxxx', $soapRequest) ;
+        return str_replace($this->getPassword(), 'xxxxx', $xmlRequest) ;
+    }
 }

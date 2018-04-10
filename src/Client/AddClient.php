@@ -8,15 +8,20 @@ use RialtoWebService\ServiceType\Add;
 use RialtoWebService\StructType\AddRialtoOrders;
 use RialtoWebService\StructType\RialtoWebOrderList;
 use WsdlToPhp\PackageBase\AbstractSoapClientBase;
+use Psr\Log\LoggerInterface;
 
 class AddClient
 {
     /** @var ClientConfiguration */
     private $configuration;
 
-    public function __construct(ClientConfiguration $configuration)
+    /** @var LoggerInterface */
+    private $loggerInterface;
+
+    public function __construct(ClientConfiguration $configuration, LoggerInterface $loggerInterface)
     {
         $this->configuration = $configuration;
+        $this->loggerInterface = $loggerInterface;
     }
 
     /**
@@ -41,9 +46,10 @@ class AddClient
 
         $result = $service->AddRialtoOrders($orders);
 
-        // TODO: log these
-        //echo $service->getLastRequest();
-        //echo $service->getLastResponse();
+        // log request and response
+        $xmlRequest = $this->configuration->concealRequestCredentials(Add::getSoapClient()->__getLastRequest());
+        $this->loggerInterface->info($xmlRequest);
+        $this->loggerInterface->info(Add::getSoapClient()->__getLastResponse());
 
 
         if (!$result instanceof \RialtoWebService\StructType\AddRialtoOrdersResponse) {
