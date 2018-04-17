@@ -39,6 +39,10 @@ class GetOrdersResult implements \IteratorAggregate
             $instance->orders[$orderResult->getOrderNo()] = (new GetOrderResult($orderResult->getOrderNo()))->withOrder($orderResult);
         }
 
+        if ($orderResults->getErrors() === null) {
+            return $instance;
+        }
+
         $errors = $orderResults->getErrors()->getError() ?? [];
         foreach ($errors as $error) {
             if (!isset($instance->orders[$error->getOrderNo()])) {
@@ -82,8 +86,8 @@ class GetOrdersResult implements \IteratorAggregate
 
     private function matchOrders(GetOrdersResult $a, GetOrdersResult $b): bool
     {
-        foreach ($a->orders as $orderId => $item) {
-            $addOrderResult = $b->getOrderResultById($orderId);
+        foreach ($a->orders as $orderNo => $item) {
+            $addOrderResult = $b->getOrderResult($orderNo);
             if (!$addOrderResult || $addOrderResult->equals($item)) {
                 return false;
             }
