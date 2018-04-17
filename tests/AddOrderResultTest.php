@@ -62,12 +62,12 @@ class AddOrderResultTest extends TestCase
                 false
             ],
             'Same type with same order id and errors is equal' => [
-                $a = new AddOrderResult('1', [new Error('a', 'this is an error')]),
+                $a = (new AddOrderResult('1'))->withError(new Error('a', 'this is an error')),
                 $b = $a,
                 false
             ],
             'Same type with same order id and more errors in $b is not equal' => [
-                $a = new AddOrderResult('1', [new Error('a', 'this is an error')]),
+                $a = (new AddOrderResult('1'))->withError(new Error('a', 'this is an error')),
                 $b = $a->withError(new Error('b', 'this is another error')),
                 false
             ]
