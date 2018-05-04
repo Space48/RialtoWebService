@@ -3,17 +3,16 @@
 namespace RialtoWebService\Test;
 
 use PHPUnit\Framework\TestCase;
+use RialtoWebService\Result\GetOrderResult;
 use RialtoWebService\Result\GetOrdersResult;
 use RialtoWebService\StructType\RialtoOrderDetailsResponse;
 use RialtoWebService\StructType\RialtoOrderDetailsResponseOrder;
-use RialtoWebService\StructType\RialtoOrderDetailsResponseOrderList;
 
 class GetOrdersResultTest extends TestCase
 {
     /**
-     * @param RialtoOrderDetailsResponse $response
-     * @param GetOrdersResult $comparator
-     * @param bool $isEquals
+     * @param RialtoOrderDetailsResponseOrder $response
+     * @param GetOrdersResult $expectedResult
      * @dataProvider casesForFromResponse
      */
     public function testEquals(
@@ -21,7 +20,10 @@ class GetOrdersResultTest extends TestCase
         GetOrdersResult $comparator,
         bool $isEquals
     ) {
-        $this->assertEquals($isEquals, GetOrdersResult::fromResponse($response)->equals($comparator));
+        $this->assertEquals(
+            $isEquals,
+            GetOrdersResult::fromResponse($response)->equals($comparator)
+        );
     }
 
     public function casesForFromResponse(): array
@@ -38,9 +40,9 @@ class GetOrdersResultTest extends TestCase
                 $isEquals = false
             ],
             'A response with an order id of 100 and status of 200 should not match no orders and same status' => [
-                $response = new RialtoOrderDetailsResponse(
-                    new RialtoOrderDetailsResponseOrderList([
-                        new RialtoOrderDetailsResponseOrder(null, '100')
+                $response = new \RialtoWebService\StructType\RialtoOrderDetailsResponse(
+                    new \RialtoWebService\StructType\RialtoOrderDetailsResponseOrderList([
+                        new \RialtoWebService\StructType\RialtoOrderDetailsResponseOrder(null, '100')
                     ]),
                     null,
                     200
