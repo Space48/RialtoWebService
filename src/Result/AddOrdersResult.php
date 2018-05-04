@@ -42,7 +42,7 @@ class AddOrdersResult implements \IteratorAggregate
      */
     public function getOrderResultByOrderIdentifier(string $orderIdentifier)
     {
-        return $this->orders[$orderIdentifier] ?? null;
+        return $this->orders[$orderIdentifier] ?? new AddOrderResult($orderIdentifier);
     }
 
     public function equals($other): bool
